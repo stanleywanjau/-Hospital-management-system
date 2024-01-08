@@ -20,4 +20,5 @@ class Patient(Base):
   addmission_date= Column(Date)
   medication= Column( VARCHAR(255))
   
+  appointments = relationship("Appointment",back_populates='patient')
   

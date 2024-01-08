@@ -17,6 +17,9 @@ class Appointment(Base):
   end_time=Column(Time)
   notes=Column(Text)
   
+  doctor = relationship('Doctor',back_populates='appointments')
+  patient = relationship('Patient',back_populates='appointments')
+  
   
   def __repr__(self):
     return f"<Appointment(id={self.id},doctor-id={self.doctor_id},patient_id={self.patient_id},start_time={self.start_time},end_time={self.end_time},notes={self.notes})>"
