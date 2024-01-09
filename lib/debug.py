@@ -80,5 +80,40 @@ patient.add_patient_data(
     medication="Aspirin"
 )
 
+# Test deleting a patient
+delete_first_name = "John"
+delete_last_name = "Doe"
+patient.delete_patient(delete_first_name, delete_last_name)
+
+
+# Test the get_patient_by_id method
+test_first_name = "John"
+test_last_name = "Doe"
+found_patient = patient.get_patient_by_name(test_first_name, test_last_name)
+
+# Display the result
+if found_patient:
+    print(f"\nPatient found with first name {test_first_name} and last name {test_last_name}:")
+    print(found_patient)
+else:
+    print(f"\nPatient not found with first name {test_first_name} and last name {test_last_name}.")
+
+
+
+# Print patient details before update
+test_first_name = "John"
+test_last_name = "Doe"
+before_update_patient = patient.get_patient_by_name(test_first_name, test_last_name)
+print("\nPatient Details Before Update:")
+print(before_update_patient)
+
+# Test the update_patient_by_name method
+update_data = {'medication': 'Ibuprofen'}
+patient.update_patient_by_name(test_first_name, test_last_name, update_data)
+
+# Print patient details after update
+after_update_patient = patient.get_patient_by_name(test_first_name, test_last_name)
+print("\nPatient Details After Update:")
+print(after_update_patient)
 
 print("\nDebug script execution completed.")
