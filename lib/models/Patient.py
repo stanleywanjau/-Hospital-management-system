@@ -24,6 +24,7 @@ class Patient(Base):
   medication= Column( VARCHAR(255))
   
   appointments = relationship("Appointment",back_populates='patient')
+  doctor=relationship("Doctor",secondary='appointments',back_populates='patient',viewonly=True)
   
   
   def __repr__(self):
