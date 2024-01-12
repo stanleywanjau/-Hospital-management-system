@@ -2,6 +2,7 @@ import click
 from models.Doctor import Doctor
 from models.Patient import Patient
 from models.Appointment import Appointment
+import tabulate
 
 
 
@@ -25,16 +26,29 @@ def patient():
 @click.option('--addmission_date', prompt="Enter date of admission", help='when was the patient admited')
 @click.option('--medication', prompt="Enter medictation", help='medictaion given to the patient')
 def add(first_name,last_name,sex,birth_date,phone_number,email,addmission_date,medication):
-  patients.add_patient_data(first_name,last_name,sex,birth_date,phone_number,email,addmission_date,medication)
+  patient_data = {
+        'first_name': first_name,
+        'last_name': last_name,
+        'sex': sex,
+        'birth_date': birth_date,
+        'phone_number': phone_number,
+        'email': email,
+        'addmission_date': addmission_date,
+        'medication': medication
+    }
+  patients.add_patient_data(**patient_data)
   click.echo('patient added successfully!')
 @click.command()
 @click.option('--name', required=True,prompt="Name to search",help="Enter the name of the patient")
 def search_patient(name):
   patient=patients.get_patient_by_name(name)
   if patient is not None:
-    click.echo(f"found patient with name {patient.full_name()}")
+        headers = ["ID", "First Name", "Last Name", "Sex", "Birth Date", "Phone Number", "Email", "Admission Date", "Medication"]
+        rows = [[patient.id, patient.first_name, patient.last_name, patient.sex, patient.birth_date, patient.phone_number, patient.email, patient.addmission_date, patient.medication]]
+        table = tabulate.tabulate(rows, headers, tablefmt="fancy_grid")
+        click.echo(f"Found patient:\n{table}")
   else:
-    click.echo(f"{name} not found")
+        click.echo(f"{name} not found")
 
 
 @click.command()
