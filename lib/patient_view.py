@@ -2,13 +2,10 @@ import click
 from models.Doctor import Doctor
 from models.Patient import Patient
 from models.Appointment import Appointment
-from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
 
 
-engine = create_engine('sqlite:///Hospital.db')
-Session = sessionmaker(bind=engine)
-session = Session()
+
+
 
 patients=Patient()
 

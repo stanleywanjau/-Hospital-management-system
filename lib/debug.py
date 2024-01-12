@@ -11,9 +11,11 @@ engine = create_engine('sqlite:///Hospital.db')
 Session = sessionmaker(bind=engine)
 session = Session()
 
+
+
 # Instantiate a doctor object for testing
 doctor =Doctor()
-# all=doctor.patients()
+all=doctor.patients()
 # for r in all:
 #     print(r)
 test_doctor = Doctor(first_name="John", last_name="Doe", department="Cardiology", phone=1234567890)
