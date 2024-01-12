@@ -7,6 +7,7 @@ name = "pypi"
 sqlalchemy = "*"
 faker = "*"
 click = "*"
+tabulate = "*"
 
 [dev-packages]
 

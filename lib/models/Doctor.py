@@ -4,6 +4,7 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import object_session
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy import create_engine
+from tabulate import tabulate
 # Base = declarative_base()
 from .Base import Base
 engine = create_engine('sqlite:///Hospital.db')
@@ -48,12 +49,22 @@ class Doctor(Base):
 
 
   def get_doctor_appointments(self, name):
-    doctor = self.get_doctor_by_name(name)
+        doctor = self.get_doctor_by_name(name)
 
-    if doctor:
-        return doctor.appointments
-    else:
-        return None
+        if doctor:
+            appointments = doctor.appointments
+            rows = []
+            result = f"Appointments for Dr. {doctor.full_name()}:\n"
+
+            for appointment in appointments:
+                patient_name = appointment.patient.full_name()
+                rows.append([appointment.id, patient_name, appointment.start_time, appointment.end_time, appointment.notes])
+            headers = ["Appointment ID", "Patient", "Start Time", "End Time", "Notes"]
+            result = tabulate(rows, headers, tablefmt="fancy_grid")
+
+            return print(result)
+        else:
+            return print(f"Doctor with Name {name} not found.")
         
   
   def delete_doctor(self, name):

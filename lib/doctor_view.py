@@ -3,6 +3,7 @@ import click
 from models.Doctor import Doctor
 from models.Patient import Patient
 from models.Appointment import Appointment
+import tabulate
 
 doctor_cls = Doctor()
 
@@ -24,30 +25,34 @@ def add(first_name,last_name,department,phone):
 @doctor.command()
 def list():
     doctors=doctor_cls.get_doctors()
-    for doctor in doctors:
-        click.echo(f"Doctor ID: {doctor.id}, Name: {doctor.full_name()} ,department: {doctor.department}")
+    if not doctors:
+        click.echo("No doctors found.")
+    else:
+        headers = ["ID", "Name", "Department"]
+        rows = [[doctor.id, doctor.full_name(), doctor.department] for doctor in doctors]
+        table = tabulate.tabulate(rows, headers, tablefmt="fancy_grid")
+        click.echo(table)
 @click.command()
 @click.option('--name', required=True ,help="enter  name" ,prompt="Enter name")
 # @click.option('--last_name', required=True ,help="enter last name" ,prompt="Enter last name")
 def search_doctor(name):
     doctor =doctor_cls. get_doctor_by_name(name)
     if doctor is not None:
-        click.echo(f"found {doctor.full_name()}")
+        headers = ["ID", "Name", "Department"]
+        rows = [[doctor.id, doctor.full_name(), doctor.department]]
+        table = tabulate.tabulate(rows, headers, tablefmt="fancy_grid")
+        click.echo(f"Found Doctor:\n{table}")
     else:
         click.echo(f"{name} not found")
 
 @click.command()
 @click.option('--name',required=True,help="Name of the the doctor",prompt="Name of the doctor")
 def get_appointment_for_doc(name):
-    doctor=doctor_cls.get_doctor_appointments(name)
-    # print(doctor)
-    if doctor is not None:
-        # patient=doctor.patient
-        # print(patient)
-        for appointment in doctor:
-            print(f"Appointment ID: {appointment}, Name:{appointment.notes} ")
-    else:
-        print("Doctor not found.")
+    
+    doctor_cls.get_doctor_appointments(name)
+    
+   
+    
 @click.command()
 @click.option('--name',required=True,help="Name of doctor to delete",prompt="Name of doctor to delete")
 def delete (name):
