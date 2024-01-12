@@ -1,10 +1,12 @@
-from sqlalchemy import Column, Integer, String,Date,Enum
+from sqlalchemy import Column, Integer, String,Date,Enum,or_
 from sqlalchemy.orm import relationship, sessionmaker
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import object_session
 from sqlalchemy.dialects.mysql import VARCHAR
 from sqlalchemy import create_engine
 from datetime import datetime
+
+
 
 from .Base import Base
 engine = create_engine('sqlite:///Hospital.db')
@@ -36,25 +38,29 @@ class Patient(Base):
     patient=Patient(first_name=first_name,last_name=last_name,sex=sex,birth_date=birth_date,phone_number=phone_number,email=email,addmission_date=addmission_date,medication=medication)
     session.add(patient)
     session.commit()
-  def delete_patient(self,first_name,last_name):
-    patient_to_delete =session.query(Patient).filter(first_name==first_name,last_name==last_name).first()
+  def full_name(self):
+    return f"{self.first_name} {self.last_name}"
+    
+  def delete_patient(self,name):
+    patient_to_delete =self.get_patient_by_name(name)
     if patient_to_delete:
         session.delete(patient_to_delete)
         session.commit()
-        print(f"Patient with name {first_name} {last_name} deleted successfully.")
+        print(f"Patient with name {patient_to_delete.full_name()} deleted successfully.")
     else:
-        print(f"Patient with name {first_name} {last_name} not found.")
+        print(f"Patient with name {name} not found.")
   
-  def get_patient_by_name(self, first_name, last_name):
-    return session.query(Patient).filter(first_name==first_name,last_name==last_name).first()
+  def get_patient_by_name(self, name):
+    return session.query(Patient).filter(or_(Patient.first_name == name, Patient.last_name == name)).first()
   
   
-  def update_patient_by_name(self, first_name,last_name ,new_data):
-    patient = session.query(Patient).filter(first_name==first_name,last_name==last_name).first()
+  def update_patient_by_name(self, name,new_data:dict):
+    patient = self.get_patient_by_name(name)
     if patient:
         for key, value in new_data.items():
             setattr(patient, key, value)
         session.commit()
-        print(f"Patient with name {first_name} {last_name}updated successfully.")
+        print(f"Patient with name {patient.full_name()} updated successfully.")
     else:
-        print(f"Patient with name {first_name} {last_name} not found.")
+        print(f"Patient with name {name} not found.")
+

@@ -42,7 +42,8 @@ def get_appointment_for_doc(name):
     doctor=doctor_cls.get_doctor_appointments(name)
     # print(doctor)
     if doctor is not None:
-    
+        # patient=doctor.patient
+        # print(patient)
         for appointment in doctor:
             print(f"Appointment ID: {appointment}, Name:{appointment.notes} ")
     else:
