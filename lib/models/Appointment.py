@@ -5,6 +5,7 @@ from sqlalchemy.orm import object_session
 from sqlalchemy import create_engine
 from datetime import datetime
 from .Doctor import Doctor
+from tabulate import tabulate
 
 
 from .Base import Base
@@ -33,15 +34,22 @@ class Appointment(Base):
   
   def get_appointments(self):
     appointments = session.query(Appointment).all()
-    result = ""
-    
-    for appointment in appointments:
-        doctor_name = appointment.doctor.full_name()  
-        patient_name = appointment.patient.full_name() 
+    records = []
 
-        result += f"Appointment ID: {appointment.id}, Doctor: {doctor_name}, Patient:{patient_name} , Start Time: {appointment.start_time}, End Time: {appointment.end_time}, Notes: {appointment.notes}\n"
-    
-    return print(result)
+    for appointment in appointments:
+      doctor_name = appointment.doctor.full_name()
+      patient_name = appointment.patient.full_name()
+      record = {
+                "Appointment ID": appointment.id,
+                "Doctor": doctor_name,
+                "Patient": patient_name,
+                "Start Time": appointment.start_time,
+                "End Time": appointment.end_time,
+                "Notes": appointment.notes
+              }
+      records.append(record)
+
+    return records
   
   
   def add_appointment(self,doctor_id,patient_id,appointment_date,start_time,end_time,notes):

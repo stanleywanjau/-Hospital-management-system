@@ -2,9 +2,10 @@ import click
 from models.Doctor import Doctor
 from models.Patient import Patient
 from models.Appointment import Appointment
+import tabulate
 
 appointments=Appointment()
-# click.echo(appointments)
+
 
 @click.group()
 def appointment():
@@ -12,7 +13,22 @@ def appointment():
 
 @click.command()
 def list_appointments():
-  appointments.get_appointments()
+    appointment_s = appointments.get_appointments()
+
+    if appointment_s:
+        headers = ["Appointment ID", "Doctor", "Patient", "Start Time", "End Time", "Notes"]
+        rows = []
+
+        for appointment in appointment_s:
+            row = [appointment["Appointment ID"], appointment["Doctor"], appointment["Patient"],
+                  appointment["Start Time"], appointment["End Time"], appointment["Notes"]]
+            rows.append(row)
+
+        table = tabulate.tabulate(rows, headers, tablefmt="fancy_grid")
+        click.echo(table)
+    else:
+        click.echo("No appointments found.")
+
   
 @click.command()
 @click.option('--doctor_id', required=True,prompt="Enter doctor ID",help="Enter doctor ID that will be see the patient")

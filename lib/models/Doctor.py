@@ -26,11 +26,7 @@ class Doctor(Base):
   def __repr__(self):
     return f"<doctor(id={self.id}, first_name={self.first_name}, last_name={self.last_name}, department={self.department}, phone={self.phone})>"
 
-  def patients(self):
-        return self.patient
-
-  def appointment(self):
-    return self.appointments
+  
   def full_name(self):
     return f"{self.first_name} {self.last_name}"
   def add_doctor(self,first_name,last_name,department,phone):
@@ -38,7 +34,14 @@ class Doctor(Base):
     session.add(doctor)
     session.commit()
   def get_doctors(self):
-    return session.query(Doctor).all()
+    doctors = session.query(Doctor).all()
+    doctor_data = []
+
+    for doctor in doctors:
+            doctor_tuple = (doctor.id, doctor.first_name, doctor.last_name, doctor.department, doctor.phone)
+            doctor_data.append(doctor_tuple)
+
+    return doctor_data
 
   def get_doctor_by_name(self, name):
     return (

@@ -24,13 +24,12 @@ def add(first_name,last_name,department,phone):
 
 @doctor.command()
 def list():
-    doctors=doctor_cls.get_doctors()
-    if not doctors:
+    doctor_data = doctor_cls.get_doctors()
+    if not doctor_data:
         click.echo("No doctors found.")
     else:
         headers = ["ID", "Name", "Department"]
-        rows = [[doctor.id, doctor.full_name(), doctor.department] for doctor in doctors]
-        table = tabulate.tabulate(rows, headers, tablefmt="fancy_grid")
+        table = tabulate.tabulate(doctor_data, headers, tablefmt="fancy_grid")
         click.echo(table)
 @click.command()
 @click.option('--name', required=True ,help="enter  name" ,prompt="Enter name")
