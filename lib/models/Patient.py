@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String,Date,Enum,or_
+from sqlalchemy import Column, Integer, String,Date,Enum,or_,func
 from sqlalchemy.orm import relationship, sessionmaker
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import object_session
@@ -51,11 +51,12 @@ class Patient(Base):
         print(f"Patient with name {name} not found.")
   
   def get_patient_by_name(self, name):
-    return session.query(Patient).filter(or_(Patient.first_name == name, Patient.last_name == name)).first()
+    name = name.lower()
+    return session.query(Patient).filter(or_(Patient.first_name.ilike(f'%{name}%'), Patient.last_name.ilike(f'%{name}%'))).first()
   
   
   def update_patient_by_name(self, name,new_data:dict):
-    patient = self.get_patient_by_name(name)
+    patient = session.query(Patient).filter(func.lower(Patient.first_name) == name.lower()).first()
     if patient:
         for key, value in new_data.items():
             setattr(patient, key, value)
